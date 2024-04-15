@@ -1,6 +1,6 @@
 package service
 
-import "github.com/Jereyji/canban-board.git/internal/repository"
+import "github.com/Jereyji/canban-board/internal/repository"
 
 type Authorization interface {
 	
