@@ -1,4 +1,4 @@
-package service
+package repository
 
 type Authorization interface {
 	
