@@ -5,7 +5,7 @@ type Authorization interface {
 }
 
 type Board interface {
-
+	
 }
 
 type Card interface {

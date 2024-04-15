@@ -1,7 +1,11 @@
-DELETE FROM board_permissions;
+DROP TABLE board_permissions;
 
-DELETE FROM cards;
+DROP TABLE cards;
 
-DELETE FROM boards;
+DROP TABLE boards;
 
-DELETE FROM users;
+DROP TABLE users;
+
+DROP TYPE access_level_enum;
+
+DROP TYPE status_card_enum;
