@@ -1,7 +1,7 @@
-package handler
+package board
 
 import "github.com/gin-gonic/gin"
 
-func (h *Handler) getAllBoards(c *gin.Context) {
+func GetAllBoards(c *gin.Context) {
 
 }

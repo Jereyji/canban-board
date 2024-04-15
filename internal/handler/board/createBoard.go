@@ -1,10 +1,7 @@
-package handler
+package board
 
-import (
-	"github.com/gin-gonic/gin"
-	"github.com/Jereyji/canban-board/internal/handler"
-)
+import "github.com/gin-gonic/gin"
 
-func (h *Handler) createBoard(c *gin.Context) {
+func СreateBoard(c *gin.Context) {
 	
 }
