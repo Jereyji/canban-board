@@ -10,27 +10,27 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 
 	auth := router.Group("/auth"); {
-		auth.POST("/sign-up")
-		auth.POST("/sign-in")
+		auth.POST("/sign-up", h.signUp)
+		auth.POST("/sign-in", h.signIn)
 	}
 
 	api := router.Group("/api"); {
 		boards := api.Group("/boards"); {
-			boards.POST("/")
-			boards.GET("/")
-			boards.GET("/:id")
-			boards.PUT("/:id")
-			boards.DELETE("/:id")
+			boards.POST("/", h.createBoard)
+			boards.GET("/", h.getAllBoards)
+			boards.GET("/:id", h.getBoardById)
+			boards.PUT("/:id", h.updateBoard)
+			boards.DELETE("/:id", h.deleteBoard)
 
 			cards := boards.Group(":id/cards"); {
-				cards.POST("/")
-				cards.GET("/")
+				cards.POST("/", h.createCard)
+				cards.GET("/", h.getAllCards)
 			}
 		}
 		cards := boards.Group("/cards"); {
-			cards.GET("/:id")
-			cards.PUT("/:id")
-			cards.DELETE("/:id")
+			cards.GET("/:id", h.getCardById)
+			cards.PUT("/:id", h.updateCard)
+			cards.DELETE("/:id", h.deleteCard)
 		}
 	}
 	return router
