@@ -28,6 +28,6 @@ type Repository struct {
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
-		Board: NewBoardPostgres(db),
+		Board:         NewBoardPostgres(db),
 	}
 }

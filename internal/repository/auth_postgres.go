@@ -25,8 +25,8 @@ func (r *AuthPostgres) CreateUser(user todo.User) (int, error) {
 }
 
 func (r *AuthPostgres) GetUser(username string) (todo.User, error) {
-    var user todo.User
-    query := "SELECT id, password_hash FROM " + usersTable + " WHERE username=$1"
-    err := r.db.Get(&user, query, username)
-    return user, err
+	var user todo.User
+	query := "SELECT id, password_hash FROM " + usersTable + " WHERE username=$1"
+	err := r.db.Get(&user, query, username)
+	return user, err
 }

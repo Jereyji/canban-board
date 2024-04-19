@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	usersTable = "users"
-	boardsTable = "boards"
+	usersTable            = "users"
+	boardsTable           = "boards"
 	boardPermissionsTable = "board_permissions"
-	cardsTable = "cards"
+	cardsTable            = "cards"
 )
 
 type Config struct {
@@ -30,7 +30,7 @@ func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
 	}
 
 	err = db.Ping()
-	if (err != nil) {
+	if err != nil {
 		return nil, err
 	}
 

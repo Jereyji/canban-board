@@ -10,7 +10,7 @@ import (
 func (h *Handler) createBoard(c *gin.Context) {
 	id, err := getUserId(c)
 	if err != nil {
-		return 
+		return
 	}
 
 	var input todo.Board
@@ -18,14 +18,14 @@ func (h *Handler) createBoard(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	
+
 	id, err = h.services.Board.Create(id, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string] interface{}{
+	c.JSON(http.StatusOK, map[string]interface{}{
 		"id": id,
 	})
 }

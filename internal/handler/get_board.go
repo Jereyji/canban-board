@@ -10,7 +10,7 @@ import (
 func (h *Handler) getBoardById(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
-		return 
+		return
 	}
 
 	id, err := strconv.Atoi(c.Param("id"))

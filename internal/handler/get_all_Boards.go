@@ -14,7 +14,7 @@ type getAllBoardResponse struct {
 func (h *Handler) getAllBoards(c *gin.Context) {
 	id, err := getUserId(c)
 	if err != nil {
-		return 
+		return
 	}
 
 	boards, err := h.services.Board.GetAll(id)

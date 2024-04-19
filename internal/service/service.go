@@ -18,7 +18,6 @@ type Board interface {
 }
 
 type Card interface {
-
 }
 
 type Service struct {
@@ -30,6 +29,6 @@ type Service struct {
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
-		Board: NewBoardService(repos.Board),
+		Board:         NewBoardService(repos.Board),
 	}
 }

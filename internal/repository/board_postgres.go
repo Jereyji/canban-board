@@ -39,8 +39,8 @@ func (r *BoardPostgres) Create(userId int, board todo.Board) (int, error) {
 
 func (r *BoardPostgres) GetAll(userId int) ([]todo.Board, error) {
 	var boards []todo.Board
-	query := "SELECT bt.id, bt.title, bt.description, bt.created_at FROM " + boardsTable + " bt INNER JOIN " + 
-			boardPermissionsTable + " bu on bt.id = bu.board_id WHERE bu.user_id = $1"
+	query := "SELECT bt.id, bt.title, bt.description, bt.created_at FROM " + boardsTable + " bt INNER JOIN " +
+		boardPermissionsTable + " bu on bt.id = bu.board_id WHERE bu.user_id = $1"
 
 	err := r.db.Select(&boards, query, userId)
 	return boards, err
@@ -48,8 +48,8 @@ func (r *BoardPostgres) GetAll(userId int) ([]todo.Board, error) {
 
 func (r *BoardPostgres) GetById(userId, boardId int) (todo.Board, error) {
 	var board todo.Board
-	query := "SELECT bt.id, bt.title, bt.description, bt.created_at FROM " + boardsTable + " bt INNER JOIN " + 
-			boardPermissionsTable + " bu on bt.id = bu.board_id WHERE bu.user_id = $1 AND bu.board_id = $2"
+	query := "SELECT bt.id, bt.title, bt.description, bt.created_at FROM " + boardsTable + " bt INNER JOIN " +
+		boardPermissionsTable + " bu on bt.id = bu.board_id WHERE bu.user_id = $1 AND bu.board_id = $2"
 
 	err := r.db.Get(&board, query, userId, boardId)
 	return board, err
