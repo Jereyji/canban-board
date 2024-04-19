@@ -12,7 +12,9 @@ type Authorization interface {
 }
 
 type Board interface {
-
+	Create(userId int, board todo.Board) (int, error)
+	GetAll(userId int) ([]todo.Board, error)
+	GetById(userId, boardId int) (todo.Board, error)
 }
 
 type Card interface {
@@ -28,5 +30,6 @@ type Service struct {
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos.Authorization),
+		Board: NewBoardService(repos.Board),
 	}
 }
