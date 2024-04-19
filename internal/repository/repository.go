@@ -7,14 +7,13 @@ import (
 
 type Authorization interface {
 	CreateUser(user todo.User) (int, error)
+	GetUser(username string) (todo.User, error)
 }
 
 type Board interface {
-	
 }
 
 type Card interface {
-
 }
 
 type Repository struct {
