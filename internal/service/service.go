@@ -1,9 +1,12 @@
 package service
 
-import "github.com/Jereyji/canban-board/internal/repository"
+import (
+	todo "github.com/Jereyji/canban-board"
+	"github.com/Jereyji/canban-board/internal/repository"
+)
 
 type Authorization interface {
-	
+	CreateUser(user todo.User) (int, error)
 }
 
 type Board interface {
@@ -21,5 +24,7 @@ type Service struct {
 }
 
 func NewService(repos *repository.Repository) *Service {
-	return &Service{}
+	return &Service{
+		Authorization: NewAuthService(repos.Authorization),
+	}
 }
