@@ -32,6 +32,7 @@ func (h *Handler) updateBoard(c *gin.Context) {
 	}
 	
 	c.JSON(http.StatusOK, statusResponse {
+		Activity: "Update board",
 		Status: "ok",
 	})
 }

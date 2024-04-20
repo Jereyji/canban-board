@@ -9,10 +9,12 @@ type Authorization interface {
 	CreateUser(user todo.User) (int, error)
 	GenerateToken(username, password string) (string, error)
 	ParseToken(accessToken string) (int, error)
+	CheckUser(email string) (int, error)
 }
 
 type Board interface {
 	Create(userId int, board todo.Board) (int, error)
+	AddPermission(boardId, userId int, access string) error
 	GetAll(userId int) ([]todo.Board, error)
 	GetById(userId, boardId int) (todo.Board, error)
 	Delete(userId, boardId int) error

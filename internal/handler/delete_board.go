@@ -25,6 +25,7 @@ func (h *Handler) deleteBoard(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, statusResponse{
+		Activity: "Delete board",
 		Status: "ok",
 	})
 }

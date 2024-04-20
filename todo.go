@@ -14,7 +14,6 @@ type Board struct {
 
 type BoardPermission struct {
 	Id          int    `json:"-" db:"id"`
-	BoardId     int    `json:"board_id" db:"board_id"`
 	UserId      int    `json:"user_id" db:"user_id"`
 	AccessLevel string `json:"access_level" db:"access_level"`
 }

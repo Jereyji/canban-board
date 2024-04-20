@@ -28,6 +28,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			boards.POST("/", h.createBoard)
 			boards.GET("/", h.getAllBoards)
+			boards.POST("/:id", h.addPermission)
 			boards.GET("/:id", h.getBoardById)
 			boards.PUT("/:id", h.updateBoard)
 			boards.DELETE("/:id", h.deleteBoard)

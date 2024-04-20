@@ -30,3 +30,10 @@ func (r *AuthPostgres) GetUser(username string) (todo.User, error) {
 	err := r.db.Get(&user, query, username)
 	return user, err
 }
+
+func (r *AuthPostgres) CheckUser(email string) (int, error) {
+	var userId int
+	query := "SELECT id FROM " + usersTable + " WHERE email = $1"
+	err := r.db.QueryRow(query, email).Scan(&userId)
+	return userId, err
+}

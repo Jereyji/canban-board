@@ -42,6 +42,13 @@ func (r *BoardPostgres) Create(userId int, board todo.Board) (int, error) {
 	return id, tx.Commit()
 }
 
+func (r * BoardPostgres) AddPermission(boardId, userId int, access string) error {
+	query := "INSERT INTO " + boardPermissionsTable + " (board_id, user_id, access_level) VALUES ($1, $2, $3)"
+	_, err := r.db.Exec(query, boardId, userId, access)
+
+	return err
+}
+
 func (r *BoardPostgres) GetAll(userId int) ([]todo.Board, error) {
 	var boards []todo.Board
 	query := "SELECT bt.id, bt.title, bt.description, bt.created_at FROM " + boardsTable + " bt INNER JOIN " +

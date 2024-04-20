@@ -35,6 +35,14 @@ func (s *AuthService) CreateUser(user todo.User) (int, error) {
 	return s.repo.CreateUser(user)
 }
 
+func (s *AuthService) CheckUser(email string) (int, error) {
+	id, err := s.repo.CheckUser(email)
+	if id == 0 || err != nil {
+		return 0, errors.New("user with given email does not exist")
+	}
+	return id, nil	
+}
+
 func (s *AuthService) GenerateToken(username, password string) (string, error) {
 	user, err := s.repo.GetUser(username)
 	if err != nil {

@@ -17,6 +17,10 @@ func (s *BoardService) Create(userId int, board todo.Board) (int, error) {
 	return s.repo.Create(userId, board)
 }
 
+func (s *BoardService) AddPermission(boardId, userId int, access string) error {
+	return s.repo.AddPermission(boardId, userId, access)
+}
+
 func (s *BoardService) GetAll(userId int) ([]todo.Board, error) {
 	return s.repo.GetAll(userId)
 }

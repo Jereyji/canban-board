@@ -8,10 +8,12 @@ import (
 type Authorization interface {
 	CreateUser(user todo.User) (int, error)
 	GetUser(username string) (todo.User, error)
+	CheckUser(email string) (int, error)
 }
 
 type Board interface {
 	Create(userId int, board todo.Board) (int, error)
+	AddPermission(boardId, userId int, access string) error
 	GetAll(userId int) ([]todo.Board, error)
 	GetById(userId, boardId int) (todo.Board, error)
 	Delete(userId, boardId int) error

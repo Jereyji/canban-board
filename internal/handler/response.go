@@ -10,6 +10,7 @@ type errorResponse struct {
 }
 
 type statusResponse struct {
+	Activity string `json:"activity"`
 	Status string `json:"status"`
 }
 
