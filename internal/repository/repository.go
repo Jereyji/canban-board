@@ -18,6 +18,7 @@ type Board interface {
 	GetById(userId, boardId int) (todo.Board, error)
 	Delete(userId, boardId int) error
 	Update(userId, boardId int, input todo.UpdateBoardInput) error
+	CheckPermission(ownerId, boardId int) error
 }
 
 type Card interface {

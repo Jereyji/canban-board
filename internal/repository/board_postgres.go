@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -42,10 +43,18 @@ func (r *BoardPostgres) Create(userId int, board todo.Board) (int, error) {
 	return id, tx.Commit()
 }
 
-func (r * BoardPostgres) AddPermission(boardId, userId int, access string) error {
-	query := "INSERT INTO " + boardPermissionsTable + " (board_id, user_id, access_level) VALUES ($1, $2, $3)"
-	_, err := r.db.Exec(query, boardId, userId, access)
+func (r *BoardPostgres) AddPermission(boardId, userId int, access string) error {
+	var count int
+	err := r.db.QueryRow("SELECT COUNT(*) FROM "+boardPermissionsTable+" WHERE board_id = $1 AND user_id = $2", boardId, userId).Scan(&count)
+	if err != nil {
+		return err
+	}
+	if count > 0 {
+		return errors.New("this user already has access to the board")
+	}
 
+	query := "INSERT INTO " + boardPermissionsTable + " (board_id, user_id, access_level) VALUES ($1, $2, $3)"
+	_, err = r.db.Exec(query, boardId, userId, access)
 	return err
 }
 
@@ -68,7 +77,7 @@ func (r *BoardPostgres) GetById(userId, boardId int) (todo.Board, error) {
 }
 
 func (r *BoardPostgres) Delete(userId, boardId int) error {
-	query := "DELETE FROM " + boardsTable + " bt USING " + boardPermissionsTable + 
+	query := "DELETE FROM " + boardsTable + " bt USING " + boardPermissionsTable +
 		" bu WHERE bt.id = bu.board_id AND bu.user_id = $1 AND bu.board_id = $2"
 	_, err := r.db.Exec(query, userId, boardId)
 
@@ -82,20 +91,20 @@ func (r *BoardPostgres) Update(userId, boardId int, input todo.UpdateBoardInput)
 
 	if input.Title != nil {
 		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
-		args = append(args, *&input.Title)
+		args = append(args, *input.Title)
 		argId++
 	}
 
 	if input.Description != nil {
 		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
-		args = append(args, *&input.Description)
+		args = append(args, *input.Description)
 		argId++
 	}
 
 	argBoardIdStr := strconv.Itoa(argId)
 	argUserIdStr := strconv.Itoa(argId + 1)
 	setQuery := strings.Join(setValues, ", ")
-	query := "UPDATE " + boardsTable + " bt SET " + setQuery + " FROM " + boardPermissionsTable + 
+	query := "UPDATE " + boardsTable + " bt SET " + setQuery + " FROM " + boardPermissionsTable +
 		" bu WHERE bt.id = bu.board_id AND bu.board_id = $" + argBoardIdStr + " AND bu.user_id = $" + argUserIdStr
 	args = append(args, boardId, userId)
 
@@ -104,4 +113,21 @@ func (r *BoardPostgres) Update(userId, boardId int, input todo.UpdateBoardInput)
 
 	_, err := r.db.Exec(query, args...)
 	return err
+}
+
+func (r *BoardPostgres) CheckPermission(ownerId, boardId int) error {
+	var exists bool
+	err := r.db.QueryRow(
+			"SELECT EXISTS (SELECT id FROM "+boardPermissionsTable+
+			" WHERE board_id = $1 AND user_id = $2 AND access_level = 'admin')", 
+			boardId, 
+			ownerId,
+		).Scan(&exists)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return errors.New("you do not have the right to make changes to this board")
+	}
+	return nil
 }

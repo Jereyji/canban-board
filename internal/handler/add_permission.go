@@ -13,7 +13,7 @@ type userPermission struct {
 }
 
 func (h *Handler) addPermission(c *gin.Context) {
-	_, err := getUserId(c)
+	owner_id, err := getUserId(c)
 	if err != nil {
 		return
 	}
@@ -21,6 +21,12 @@ func (h *Handler) addPermission(c *gin.Context) {
 	board_id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id parametr")
+		return
+	}
+
+	err = h.services.CheckPermission(owner_id, board_id)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
