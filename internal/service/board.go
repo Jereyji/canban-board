@@ -28,3 +28,10 @@ func (s *BoardService) GetById(userId, boardId int) (todo.Board, error) {
 func (s *BoardService) Delete(userId, boardId int) error {
 	return s.repo.Delete(userId, boardId)
 }
+
+func (s *BoardService) Update(userId, boardId int, input todo.UpdateBoardInput) error {
+	if err := input.Validate(); err != nil {
+		return err
+	}
+	return s.repo.Update(userId, boardId, input)
+}

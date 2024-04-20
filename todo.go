@@ -1,6 +1,9 @@
 package todo
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type Board struct {
 	Id          int       `json:"-" db:"id"`
@@ -25,4 +28,16 @@ type Card struct {
 	StatusCard  string    `json:"status_card" db:"status_card"`
 	DueDate     time.Time `json:"due_date" db:"due_date"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+}
+
+type UpdateBoardInput struct {
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
+}
+
+func (i UpdateBoardInput) Validate() error {
+	if i.Title == nil && i.Description == nil {
+		return errors.New("update structure has no values")
+	}
+	return nil
 }

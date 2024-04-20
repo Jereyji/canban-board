@@ -1,8 +1,13 @@
 package repository
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
+
 	todo "github.com/Jereyji/canban-board"
 	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
 )
 
 type BoardPostgres struct {
@@ -60,5 +65,36 @@ func (r *BoardPostgres) Delete(userId, boardId int) error {
 		" bu WHERE bt.id = bu.board_id AND bu.user_id = $1 AND bu.board_id = $2"
 	_, err := r.db.Exec(query, userId, boardId)
 
+	return err
+}
+
+func (r *BoardPostgres) Update(userId, boardId int, input todo.UpdateBoardInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *&input.Title)
+		argId++
+	}
+
+	if input.Description != nil {
+		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
+		args = append(args, *&input.Description)
+		argId++
+	}
+
+	argBoardIdStr := strconv.Itoa(argId)
+	argUserIdStr := strconv.Itoa(argId + 1)
+	setQuery := strings.Join(setValues, ", ")
+	query := "UPDATE " + boardsTable + " bt SET " + setQuery + " FROM " + boardPermissionsTable + 
+		" bu WHERE bt.id = bu.board_id AND bu.board_id = $" + argBoardIdStr + " AND bu.user_id = $" + argUserIdStr
+	args = append(args, boardId, userId)
+
+	logrus.Debugf("updateQuery: %s", query)
+	logrus.Debugf("args: %s", args)
+
+	_, err := r.db.Exec(query, args...)
 	return err
 }
