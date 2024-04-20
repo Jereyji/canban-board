@@ -24,3 +24,7 @@ func (s *BoardService) GetAll(userId int) ([]todo.Board, error) {
 func (s *BoardService) GetById(userId, boardId int) (todo.Board, error) {
 	return s.repo.GetById(userId, boardId)
 }
+
+func (s *BoardService) Delete(userId, boardId int) error {
+	return s.repo.Delete(userId, boardId)
+}

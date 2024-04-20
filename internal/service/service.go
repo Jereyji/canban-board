@@ -15,6 +15,7 @@ type Board interface {
 	Create(userId int, board todo.Board) (int, error)
 	GetAll(userId int) ([]todo.Board, error)
 	GetById(userId, boardId int) (todo.Board, error)
+	Delete(userId, boardId int) error
 }
 
 type Card interface {

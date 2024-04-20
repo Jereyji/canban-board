@@ -54,3 +54,11 @@ func (r *BoardPostgres) GetById(userId, boardId int) (todo.Board, error) {
 	err := r.db.Get(&board, query, userId, boardId)
 	return board, err
 }
+
+func (r *BoardPostgres) Delete(userId, boardId int) error {
+	query := "DELETE FROM " + boardsTable + " bt USING " + boardPermissionsTable + 
+		" bu WHERE bt.id = bu.board_id AND bu.user_id = $1 AND bu.board_id = $2"
+	_, err := r.db.Exec(query, userId, boardId)
+
+	return err
+}
