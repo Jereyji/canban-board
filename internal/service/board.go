@@ -40,6 +40,6 @@ func (s *BoardService) Update(userId, boardId int, input todo.UpdateBoardInput) 
 	return s.repo.Update(userId, boardId, input)
 }
 
-func (s *BoardService) CheckPermission(ownerId, boardId int) error {
-	return s.repo.CheckPermission(ownerId, boardId)
+func (s *BoardService) CheckPermission(ownerId, boardId int, accessLevel string) error {
+	return s.repo.CheckPermission(ownerId, boardId, accessLevel)
 }

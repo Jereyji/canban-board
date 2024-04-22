@@ -24,7 +24,7 @@ func (h *Handler) addPermission(c *gin.Context) {
 		return
 	}
 
-	err = h.services.CheckPermission(owner_id, board_id)
+	err = h.services.CheckPermission(owner_id, board_id, adminLevel)
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return

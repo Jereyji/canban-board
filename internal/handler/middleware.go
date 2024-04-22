@@ -9,6 +9,8 @@ import (
 )
 
 const (
+	adminLevel = "admin"
+	editorLevel = "editor"
 	authorizationHeader = "Authorization"
 	userCtx             = "userId"
 )

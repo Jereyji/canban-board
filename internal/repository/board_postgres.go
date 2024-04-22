@@ -115,14 +115,16 @@ func (r *BoardPostgres) Update(userId, boardId int, input todo.UpdateBoardInput)
 	return err
 }
 
-func (r *BoardPostgres) CheckPermission(ownerId, boardId int) error {
+func (r *BoardPostgres) CheckPermission(ownerId, boardId int, accessLevel string) error {
 	var exists bool
 	err := r.db.QueryRow(
-			"SELECT EXISTS (SELECT id FROM "+boardPermissionsTable+
-			" WHERE board_id = $1 AND user_id = $2 AND access_level = 'admin')", 
-			boardId, 
-			ownerId,
-		).Scan(&exists)
+		"SELECT COUNT(*) FROM "+boardPermissionsTable+
+		" WHERE user_id = $1 AND board_id = $2  AND access_level = $3", 
+		ownerId,
+		boardId, 
+		accessLevel,
+	).Scan(&exists)
+	
 	if err != nil {
 		return err
 	}
