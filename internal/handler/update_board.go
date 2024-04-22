@@ -26,6 +26,12 @@ func (h *Handler) updateBoard(c *gin.Context) {
 		return
 	}
 
+	err = h.services.CheckPermission(userId, id)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
 	if err := h.services.Update(userId, id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

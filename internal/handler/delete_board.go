@@ -19,6 +19,12 @@ func (h *Handler) deleteBoard(c *gin.Context) {
 		return
 	}
 
+	err = h.services.CheckPermission(userId, id)
+	if err != nil {
+		newErrorResponse(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
 	err = h.services.Board.Delete(userId, id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
