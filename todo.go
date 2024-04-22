@@ -20,13 +20,18 @@ type BoardPermission struct {
 
 type Card struct {
 	Id          int       `json:"-" db:"id"`
-	BoardId     int       `json:"board_id" db:"board_id"`
-	UserId      int       `json:"user_id" db:"user_id"`
 	Title       string    `json:"title" binding:"required"`
 	Description string    `json:"description"`
-	StatusCard  string    `json:"status_card" db:"status_card"`
 	DueDate     time.Time `json:"due_date" db:"due_date"`
+	UserId      int       `json:"user_id" db:"user_id"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+}
+
+type BoardCards struct {
+	Id         int    `json:"-" db:"id"`
+	BoardId    int    `json:"board_id" db:"board_id"`
+	UserId     int    `json:"user_id" db:"user_id"`
+	StatusCard string `json:"status_card" db:"status_card"`
 }
 
 type UpdateBoardInput struct {
