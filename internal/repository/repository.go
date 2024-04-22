@@ -18,10 +18,12 @@ type Board interface {
 	GetById(userId, boardId int) (todo.Board, error)
 	Delete(userId, boardId int) error
 	Update(userId, boardId int, input todo.UpdateBoardInput) error
-	CheckPermission(ownerId, boardId int, accessLevel string) error
+	CheckPermissionToBoard(userId, boardId int, accessLevel string) error
 }
 
 type Card interface {
+	Create(boardId int, card todo.Card) (int, error)
+	CheckPermissionToCard(userId, boardId int) error
 }
 
 type Repository struct {
@@ -34,5 +36,6 @@ func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
 		Board:         NewBoardPostgres(db),
+		Card:          NewCardPostgres(db),
 	}
 }

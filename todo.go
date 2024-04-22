@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+const (
+	ToDo = "to do"
+)
+
 type Board struct {
 	Id          int       `json:"-" db:"id"`
 	Title       string    `json:"title" db:"title" binding:"required"`
@@ -22,7 +26,7 @@ type Card struct {
 	Id          int       `json:"-" db:"id"`
 	Title       string    `json:"title" binding:"required"`
 	Description string    `json:"description"`
-	DueDate     time.Time `json:"due_date" db:"due_date"`
+	DueDate     string `json:"due_date" db:"due_date"`
 	UserId      int       `json:"user_id" db:"user_id"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
