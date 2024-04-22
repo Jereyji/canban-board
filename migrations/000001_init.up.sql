@@ -26,18 +26,24 @@ CREATE TABLE board_permissions (
     access_level access_level_enum NOT NULL
 );
 
-CREATE TYPE status_card_enum AS ENUM ('to do', 'doing', 'done');
-
 -- Cards of column table
 CREATE TABLE cards (
     id SERIAL PRIMARY KEY,
-    board_id INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    status_card status_card_enum NOT NULL,
     due_date TIMESTAMP WITH TIME ZONE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE status_card_enum AS ENUM ('to do', 'doing', 'done');
+
+-- Board cards table
+CREATE TABLE board_cards (
+    id SERIAL PRIMARY KEY,
+    board_id INTEGER NOT NULL REFERENCES boards(id) ON DELETE CASCADE,
+    card_id INTEGER NOT NULL REFERENCES cards(id) ON DELETE CASCADE,
+    status_card status_card_enum NOT NULL
 );
 
 -- Indexes to improve query performance

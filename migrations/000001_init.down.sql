@@ -1,5 +1,7 @@
 DROP TABLE board_permissions;
 
+DROP TABLE board_cards;
+
 DROP TABLE cards;
 
 DROP TABLE boards;
