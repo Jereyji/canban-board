@@ -17,22 +17,21 @@ type Board struct {
 }
 
 type BoardPermission struct {
-	Id          int    `json:"-" db:"id"`
 	UserId      int    `json:"user_id" db:"user_id"`
+	BoardId     int    `json:"board_id" db:"board_id"`
 	AccessLevel string `json:"access_level" db:"access_level"`
 }
 
 type Card struct {
 	Id          int       `json:"-" db:"id"`
-	Title       string    `json:"title" binding:"required"`
-	Description string    `json:"description"`
-	DueDate     string `json:"due_date" db:"due_date"`
+	Title       string    `json:"title" db:"title" binding:"required"`
+	Description string    `json:"description" db:"description"`
+	DueDate     string    `json:"due_date" db:"due_date"`
 	UserId      int       `json:"user_id" db:"user_id"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
 
 type BoardCards struct {
-	Id         int    `json:"-" db:"id"`
 	BoardId    int    `json:"board_id" db:"board_id"`
 	UserId     int    `json:"user_id" db:"user_id"`
 	StatusCard string `json:"status_card" db:"status_card"`
