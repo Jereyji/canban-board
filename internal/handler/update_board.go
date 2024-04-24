@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	todo "github.com/Jereyji/canban-board"
 	"github.com/gin-gonic/gin"
@@ -14,11 +13,7 @@ func (h *Handler) updateBoard(c *gin.Context) {
 		return
 	}
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
+	id := c.Param("board_id")
 
 	var input todo.UpdateBoardInput
 	if err := c.BindJSON(&input); err != nil {

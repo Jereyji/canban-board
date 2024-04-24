@@ -19,31 +19,31 @@ func NewBoardPostgres(db *sqlx.DB) *BoardPostgres {
 	return &BoardPostgres{db: db}
 }
 
-func (r *BoardPostgres) Create(userId int, board todo.Board) (int, error) {
+func (r *BoardPostgres) Create(userId string, board todo.Board) (string, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
-	var id int
+	var id string
 	createBoardQuery := "INSERT INTO " + boardsTable + " (title, description) VALUES ($1, $2) RETURNING id"
 	row := tx.QueryRow(createBoardQuery, board.Title, board.Description)
 	if err := row.Scan(&id); err != nil {
 		tx.Rollback()
-		return 0, err
+		return "", err
 	}
 
 	createUserBoardQuery := "INSERT INTO " + boardPermissionsTable + " (user_id, board_id, access_level) VALUES ($1, $2, 'admin')"
 	_, err = tx.Exec(createUserBoardQuery, userId, id)
 	if err != nil {
 		tx.Rollback()
-		return 0, err
+		return "", err
 	}
 
 	return id, tx.Commit()
 }
 
-func (r *BoardPostgres) AddPermission(boardId, userId int, access string) error {
+func (r *BoardPostgres) AddPermission(boardId, userId, access string) error {
 	var count int
 	err := r.db.QueryRow("SELECT COUNT(*) FROM "+boardPermissionsTable+" WHERE board_id = $1 AND user_id = $2", boardId, userId).Scan(&count)
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *BoardPostgres) AddPermission(boardId, userId int, access string) error 
 	return err
 }
 
-func (r *BoardPostgres) GetAll(userId int) ([]todo.Board, error) {
+func (r *BoardPostgres) GetAll(userId string) ([]todo.Board, error) {
 	var boards []todo.Board
 	query := "SELECT bt.id, bt.title, bt.description, bt.created_at FROM " + boardsTable + " bt INNER JOIN " +
 		boardPermissionsTable + " bu on bt.id = bu.board_id WHERE bu.user_id = $1"
@@ -67,7 +67,7 @@ func (r *BoardPostgres) GetAll(userId int) ([]todo.Board, error) {
 	return boards, err
 }
 
-func (r *BoardPostgres) GetById(userId, boardId int) (todo.Board, error) {
+func (r *BoardPostgres) GetById(userId, boardId string) (todo.Board, error) {
 	var board todo.Board
 	query := "SELECT bt.id, bt.title, bt.description, bt.created_at FROM " + boardsTable + " bt INNER JOIN " +
 		boardPermissionsTable + " bu on bt.id = bu.board_id WHERE bu.user_id = $1 AND bu.board_id = $2"
@@ -76,7 +76,7 @@ func (r *BoardPostgres) GetById(userId, boardId int) (todo.Board, error) {
 	return board, err
 }
 
-func (r *BoardPostgres) Delete(userId, boardId int) error {
+func (r *BoardPostgres) Delete(userId, boardId string) error {
 	query := "DELETE FROM " + boardsTable + " bt USING " + boardPermissionsTable +
 		" bu WHERE bt.id = bu.board_id AND bu.user_id = $1 AND bu.board_id = $2"
 	_, err := r.db.Exec(query, userId, boardId)
@@ -84,7 +84,7 @@ func (r *BoardPostgres) Delete(userId, boardId int) error {
 	return err
 }
 
-func (r *BoardPostgres) Update(userId, boardId int, input todo.UpdateBoardInput) error {
+func (r *BoardPostgres) Update(userId, boardId string, input todo.UpdateBoardInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1
@@ -115,7 +115,7 @@ func (r *BoardPostgres) Update(userId, boardId int, input todo.UpdateBoardInput)
 	return err
 }
 
-func (r *BoardPostgres) CheckPermissionToBoard(userId, boardId int, accessLevel string) error {
+func (r *BoardPostgres) CheckPermissionToBoard(userId, boardId, accessLevel string) error {
 	var exists bool
 	err := r.db.QueryRow(
 		"SELECT COUNT(*) FROM "+boardPermissionsTable+

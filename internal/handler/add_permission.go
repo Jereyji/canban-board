@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,11 +17,7 @@ func (h *Handler) addPermission(c *gin.Context) {
 		return
 	}
 
-	board_id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id parametr")
-		return
-	}
+	board_id := c.Param("board_id")
 
 	err = h.services.CheckPermissionToBoard(owner_id, board_id, adminLevel)
 	if err != nil {

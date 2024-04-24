@@ -6,26 +6,27 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user todo.User) (int, error)
+	CreateUser(user todo.User) (string, error)
 	GetUser(username string) (todo.User, error)
-	CheckUser(email string) (int, error)
+	CheckUser(email string) (string, error)
 }
 
 type Board interface {
-	Create(userId int, board todo.Board) (int, error)
-	AddPermission(boardId, userId int, access string) error
-	GetAll(userId int) ([]todo.Board, error)
-	GetById(userId, boardId int) (todo.Board, error)
-	Delete(userId, boardId int) error
-	Update(userId, boardId int, input todo.UpdateBoardInput) error
-	CheckPermissionToBoard(userId, boardId int, accessLevel string) error
+	Create(userId string, board todo.Board) (string, error)
+	AddPermission(boardId, userId, access string) error
+	GetAll(userId string) ([]todo.Board, error)
+	GetById(userId, boardId string) (todo.Board, error)
+	Delete(userId, boardId string) error
+	Update(userId, boardId string, input todo.UpdateBoardInput) error
+	CheckPermissionToBoard(userId, boardId, accessLevel string) error
 }
 
 type Card interface {
-	Create(boardId int, card todo.Card) (int, error)
-	CheckPermissionToCard(userId, boardId int) error
-	GetAll(userId, boardId int) ([]todo.Card, error)
-	GetById(userId, cardId int) (todo.Card, error)
+	Create(boardId string, card todo.Card) (string, error)
+	CheckPermissionToCard(userId, boardId string) error
+	GetAll(userId, boardId string) ([]todo.Card, error)
+	GetById(userId, cardId string) (todo.Card, error)
+	Delete(userId, cardId string) error
 }
 
 type Repository struct {

@@ -16,10 +16,10 @@ func NewCardPostgres(db *sqlx.DB) *CardPostgres {
 	return &CardPostgres{db: db}
 }
 
-func (r *CardPostgres) Create(boardId int, card todo.Card) (int, error) {
+func (r *CardPostgres) Create(boardId string, card todo.Card) (string, error) {
 	tx, err := r.db.Begin()
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	var dueDate time.Time
@@ -29,11 +29,11 @@ func (r *CardPostgres) Create(boardId int, card todo.Card) (int, error) {
 		dueDate, err = time.Parse(time.RFC3339, card.DueDate)
 		if err != nil {
 			tx.Rollback()
-			return 0, err
+			return "", err
 		}
 	}
 
-	var cardId int
+	var cardId string
 	err = tx.QueryRow(
 		"INSERT INTO cards (title, description, due_date, user_id) VALUES ($1, $2, $3, $4) RETURNING id",
 		card.Title,
@@ -43,7 +43,7 @@ func (r *CardPostgres) Create(boardId int, card todo.Card) (int, error) {
 	).Scan(&cardId)
 	if err != nil {
 		tx.Rollback()
-		return 0, err
+		return "", err
 	}
 
 	_, err = tx.Exec(
@@ -54,13 +54,13 @@ func (r *CardPostgres) Create(boardId int, card todo.Card) (int, error) {
 	)
 	if err != nil {
 		tx.Rollback()
-		return 0, err
+		return "", err
 	}
 
 	return cardId, tx.Commit()
 }
 
-func (r *CardPostgres) CheckPermissionToCard(userId, boardId int) error {
+func (r *CardPostgres) CheckPermissionToCard(userId, boardId string) error {
 	var exists bool
 	err := r.db.QueryRow(
 		"SELECT COUNT(*) FROM "+boardPermissionsTable+
@@ -78,7 +78,7 @@ func (r *CardPostgres) CheckPermissionToCard(userId, boardId int) error {
 	return nil
 }
 
-func (r *CardPostgres) GetAll(userId, boardId int) ([]todo.Card, error) {
+func (r *CardPostgres) GetAll(userId, boardId string) ([]todo.Card, error) {
 	var cards []todo.Card
 
 	query := "SELECT ct.id, ct.title, ct.description, ct.due_date, ct.user_id, ct.created_at" +
@@ -87,7 +87,7 @@ func (r *CardPostgres) GetAll(userId, boardId int) ([]todo.Card, error) {
 		" bc on bc.card_id = ct.id INNER JOIN " + boardPermissionsTable +
 		" bp on bp.board_id = bc.board_id WHERE bc.board_id = $1 AND bp.user_id = $2"
 
-	err := r.db.Select(&cards, query, boardId, userId); 
+	err := r.db.Select(&cards, query, boardId, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (r *CardPostgres) GetAll(userId, boardId int) ([]todo.Card, error) {
 	return cards, nil
 }
 
-func (r *CardPostgres) GetById(userId, cardId int) (todo.Card, error) {
+func (r *CardPostgres) GetById(userId, cardId string) (todo.Card, error) {
 	var card todo.Card
 
 	query := "SELECT ct.id, ct.title, ct.description, ct.due_date, ct.user_id, ct.created_at" +
@@ -104,10 +104,19 @@ func (r *CardPostgres) GetById(userId, cardId int) (todo.Card, error) {
 		" bc on bc.card_id = ct.id INNER JOIN " + boardPermissionsTable +
 		" bp on bp.board_id = bc.board_id WHERE bc.card_id = $1 AND bp.user_id = $2"
 
-	err := r.db.Get(&card, query, cardId, userId); 
+	err := r.db.Get(&card, query, cardId, userId)
 	if err != nil {
 		return card, err
 	}
 
 	return card, nil
+}
+
+func (r *CardPostgres) Delete(userId, cardId string) error {
+	query := "DELETE FROM " + cardsTable + " ct USING " + boardCardsTable +
+		" bc, " + boardPermissionsTable +
+		" bp WHERE ct.id = bc.card_id AND bc.board_id = bp.board_id AND bp.user_id = $1 AND ct.id = $2"
+	_, err := r.db.Exec(query, userId, cardId)
+
+	return err
 }

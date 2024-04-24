@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	todo "github.com/Jereyji/canban-board"
 	"github.com/gin-gonic/gin"
@@ -14,7 +13,7 @@ func (h *Handler) createCard(c *gin.Context) {
 		return
 	}
 
-	boardId, err := strconv.Atoi(c.Param("id"))
+	boardId := c.Param("board_id")
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
 		return
@@ -32,7 +31,7 @@ func (h *Handler) createCard(c *gin.Context) {
 		return
 	}
 	
-	if input.UserId == 0 {
+	if input.UserId == "" {
 		input.UserId = userId
 	}
 	

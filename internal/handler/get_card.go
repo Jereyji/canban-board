@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +12,7 @@ func (h *Handler) getCardById(c *gin.Context) {
 		return
 	}
 
-	cardId, err := strconv.Atoi(c.Param("id"))
+	cardId := c.Param("card_id")
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
 		return

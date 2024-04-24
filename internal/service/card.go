@@ -6,7 +6,7 @@ import (
 )
 
 type CardService struct {
-	repo repository.Card
+	repo      repository.Card
 	boardRepo repository.Board
 }
 
@@ -14,18 +14,22 @@ func NewCardService(repo repository.Card, boardRepo repository.Board) *CardServi
 	return &CardService{repo: repo, boardRepo: boardRepo}
 }
 
-func (s *CardService) Create(userId, boardId int, card todo.Card) (int, error) {
+func (s *CardService) Create(userId, boardId string, card todo.Card) (string, error) {
 	return s.repo.Create(boardId, card)
 }
 
-func (s *CardService) CheckPermissionToCard(userId, boardId int) error {
+func (s *CardService) CheckPermissionToCard(userId, boardId string) error {
 	return s.repo.CheckPermissionToCard(userId, boardId)
 }
 
-func (s *CardService) GetAll(userId, boardId int) ([]todo.Card, error) {
+func (s *CardService) GetAll(userId, boardId string) ([]todo.Card, error) {
 	return s.repo.GetAll(userId, boardId)
 }
 
-func (s *CardService) GetById(userId, cardId int) (todo.Card, error) {
+func (s *CardService) GetById(userId, cardId string) (todo.Card, error) {
 	return s.repo.GetById(userId, cardId)
+}
+
+func (s *CardService) Delete(userId, cardId string) error {
+	return s.repo.Delete(userId, cardId)
 }

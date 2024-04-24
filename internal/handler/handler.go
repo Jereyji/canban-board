@@ -28,22 +28,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			boards.POST("/", h.createBoard)
 			boards.GET("/", h.getAllBoards)
-			boards.POST("/:id", h.addPermission)
-			boards.GET("/:id", h.getBoardById)
-			boards.PUT("/:id", h.updateBoard)
-			boards.DELETE("/:id", h.deleteBoard)
+			boards.POST("/:board_id", h.addPermission)
+			boards.GET("/:board_id", h.getBoardById)
+			boards.PUT("/:board_id", h.updateBoard)
+			boards.DELETE("/:board_id", h.deleteBoard)
 
-			cards := boards.Group(":id/cards")
+			cards := boards.Group("/:board_id/cards")
 			{
 				cards.POST("/", h.createCard)
 				cards.GET("/", h.getAllCards)
+				cards.GET("/:card_id", h.getCardById)
+				cards.PUT("/:card_id", h.updateCard)
+				cards.DELETE("/:card_id", h.deleteCard)
 			}
-		}
-		cards := boards.Group("/cards")
-		{
-			cards.GET("/:id", h.getCardById)
-			cards.PUT("/:id", h.updateCard)
-			cards.DELETE("/:id", h.deleteCard)
 		}
 	}
 	return router
