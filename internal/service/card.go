@@ -33,3 +33,7 @@ func (s *CardService) GetById(userId, cardId string) (todo.Card, error) {
 func (s *CardService) Delete(userId, cardId string) error {
 	return s.repo.Delete(userId, cardId)
 }
+
+func (s *CardService) Update(userId, cardId string, input todo.UpdateCardInput) error {
+	return s.repo.Update(userId, cardId, input)
+}

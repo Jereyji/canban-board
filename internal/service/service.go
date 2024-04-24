@@ -28,6 +28,7 @@ type Card interface {
 	GetAll(userId, boardId string) ([]todo.Card, error)
 	GetById(userId, cardId string) (todo.Card, error)
 	Delete(userId, cardId string) error
+	Update(userId, cardId string, input todo.UpdateCardInput) error
 }
 
 type Service struct {

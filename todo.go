@@ -27,7 +27,7 @@ type Card struct {
 	Title       string    `json:"title" db:"title" binding:"required"`
 	Description string    `json:"description" db:"description"`
 	DueDate     string    `json:"due_date" db:"due_date"`
-	UserId      string       `json:"user_id" db:"user_id"`
+	UserId      string    `json:"user_id" db:"user_id"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 }
 
@@ -50,8 +50,15 @@ func (i UpdateBoardInput) Validate() error {
 }
 
 type UpdateCardInput struct {
-	Title *string
-	Description *string
-	DueDate *string
-	UserId *string
+	Title       *string `json:"title"`
+	Description *string `json:"description"`
+	DueDate     *string `json:"due_date"`
+	UserId      *string	`json:"user_id"`
+}
+
+func (i UpdateCardInput) Validate() error {
+	if i.Title == nil && i.Description == nil && i.DueDate == nil && i.UserId == nil {
+		return errors.New("update structure has no values")
+	}
+	return nil
 }

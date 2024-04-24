@@ -2,6 +2,9 @@ package repository
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	todo "github.com/Jereyji/canban-board"
@@ -118,5 +121,46 @@ func (r *CardPostgres) Delete(userId, cardId string) error {
 		" bp WHERE ct.id = bc.card_id AND bc.board_id = bp.board_id AND bp.user_id = $1 AND ct.id = $2"
 	_, err := r.db.Exec(query, userId, cardId)
 
+	return err
+}
+
+func (r *CardPostgres) Update(userId, cardId string, input todo.UpdateCardInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if input.Title != nil {
+		setValues = append(setValues, fmt.Sprintf("title=$%d", argId))
+		args = append(args, *input.Title)
+		argId++
+	}
+
+	if input.Description != nil {
+		setValues = append(setValues, fmt.Sprintf("description=$%d", argId))
+		args = append(args, *input.Description)
+		argId++
+	}
+
+	if input.DueDate != nil {
+		setValues = append(setValues, fmt.Sprintf("due_date=$%d", argId))
+		args = append(args, *input.DueDate)
+		argId++
+	}
+
+	if input.UserId != nil {
+		setValues = append(setValues, fmt.Sprintf("user_id=$%d", argId))
+		args = append(args, *input.UserId)
+		argId++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+	argBoardIdStr := strconv.Itoa(argId)
+	argUserIdStr := strconv.Itoa(argId + 1)
+	query := "UPDATE " + cardsTable + " ct SET " + setQuery + " FROM " + boardCardsTable +
+		" bc, " + boardPermissionsTable + " bp WHERE ct.id = bc.card_id AND bc.board_id = bp.board_id" + 
+		" AND bp.user_id = $" + argUserIdStr + " AND ct.id = $" + argBoardIdStr
+	args = append(args, cardId, userId)
+
+	_, err := r.db.Exec(query, args...)
 	return err
 }
