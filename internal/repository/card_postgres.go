@@ -32,7 +32,7 @@ func (r *CardPostgres) Create(boardId int, card todo.Card) (int, error) {
 			return 0, err
 		}
 	}
-	
+
 	var cardId int
 	err = tx.QueryRow(
 		"INSERT INTO cards (title, description, due_date, user_id) VALUES ($1, $2, $3, $4) RETURNING id",
@@ -76,4 +76,21 @@ func (r *CardPostgres) CheckPermissionToCard(userId, boardId int) error {
 		return errors.New("you do not have the right to make changes in this board")
 	}
 	return nil
+}
+
+func (r *CardPostgres) GetAll(userId, boardId int) ([]todo.Card, error) {
+	var cards []todo.Card
+
+	query := "SELECT ct.id, ct.title, ct.description, ct.due_date, ct.user_id, ct.created_at" +
+		" FROM " + cardsTable +
+		" ct INNER JOIN " + boardCardsTable +
+		" bc on bc.card_id = ct.id INNER JOIN " + boardPermissionsTable +
+		" bp on bp.board_id = bc.board_id WHERE bc.board_id = $1 AND bp.user_id = $2"
+
+	err := r.db.Select(&cards, query, boardId, userId); 
+	if err != nil {
+		return nil, err
+	}
+
+	return cards, nil
 }

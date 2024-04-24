@@ -21,3 +21,7 @@ func (s *CardService) Create(userId, boardId int, card todo.Card) (int, error) {
 func (s *CardService) CheckPermissionToCard(userId, boardId int) error {
 	return s.repo.CheckPermissionToCard(userId, boardId)
 }
+
+func (s *CardService) GetAll(userId, boardId int) ([]todo.Card, error) {
+	return s.repo.GetAll(userId, boardId)
+}

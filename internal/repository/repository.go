@@ -24,6 +24,7 @@ type Board interface {
 type Card interface {
 	Create(boardId int, card todo.Card) (int, error)
 	CheckPermissionToCard(userId, boardId int) error
+	GetAll(userId, boardId int) ([]todo.Card, error)
 }
 
 type Repository struct {
