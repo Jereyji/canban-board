@@ -33,7 +33,7 @@ type Card struct {
 
 type BoardCards struct {
 	BoardId    int    `json:"board_id" db:"board_id"`
-	UserId     int    `json:"user_id" db:"user_id"`
+	CardId     int    `json:"card_id" db:"card_id"`
 	StatusCard string `json:"status_card" db:"status_card"`
 }
 
