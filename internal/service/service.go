@@ -26,6 +26,7 @@ type Card interface {
 	Create(userId, boardId int, card todo.Card) (int, error)
 	CheckPermissionToCard(userId, boardId int) error
 	GetAll(userId, boardId int) ([]todo.Card, error)
+	GetById(userId, cardId int) (todo.Card, error)
 }
 
 type Service struct {

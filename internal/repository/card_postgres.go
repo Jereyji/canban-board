@@ -94,3 +94,20 @@ func (r *CardPostgres) GetAll(userId, boardId int) ([]todo.Card, error) {
 
 	return cards, nil
 }
+
+func (r *CardPostgres) GetById(userId, cardId int) (todo.Card, error) {
+	var card todo.Card
+
+	query := "SELECT ct.id, ct.title, ct.description, ct.due_date, ct.user_id, ct.created_at" +
+		" FROM " + cardsTable +
+		" ct INNER JOIN " + boardCardsTable +
+		" bc on bc.card_id = ct.id INNER JOIN " + boardPermissionsTable +
+		" bp on bp.board_id = bc.board_id WHERE bc.card_id = $1 AND bp.user_id = $2"
+
+	err := r.db.Get(&card, query, cardId, userId); 
+	if err != nil {
+		return card, err
+	}
+
+	return card, nil
+}
