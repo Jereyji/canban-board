@@ -48,3 +48,10 @@ func (i UpdateBoardInput) Validate() error {
 	}
 	return nil
 }
+
+type UpdateCardInput struct {
+	Title *string
+	Description *string
+	DueDate *string
+	UserId *string
+}

@@ -13,16 +13,7 @@ func (h *Handler) deleteCard(c *gin.Context) {
 	}
 
 	cardId := c.Param("card_id")
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
-
 	boardId := c.Param("board_id")
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid board id param")
-		return
-	}
 
 	err = h.services.CheckPermissionToCard(userId, boardId)
 	if err != nil {

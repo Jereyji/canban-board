@@ -13,10 +13,6 @@ func (h *Handler) getBoardById(c *gin.Context) {
 	}
 
 	id := c.Param("board_id")
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
 
 	board, err := h.services.Board.GetById(userId, id)
 	if err != nil {

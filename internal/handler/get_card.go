@@ -13,10 +13,6 @@ func (h *Handler) getCardById(c *gin.Context) {
 	}
 
 	cardId := c.Param("card_id")
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
 
 	// Check permission to board?
 

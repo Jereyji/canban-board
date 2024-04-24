@@ -14,10 +14,6 @@ func (h *Handler) createCard(c *gin.Context) {
 	}
 
 	boardId := c.Param("board_id")
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
 	
 	err = h.services.CheckPermissionToCard(userId, boardId)
 	if err != nil {

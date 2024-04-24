@@ -13,10 +13,6 @@ func (h *Handler) deleteBoard(c *gin.Context) {
 	}
 
 	id := c.Param("board_id")
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "invalid id param")
-		return
-	}
 
 	err = h.services.CheckPermissionToBoard(userId, id, adminLevel)
 	if err != nil {
