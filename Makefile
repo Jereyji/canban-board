@@ -9,10 +9,13 @@ build:
 test:
 	go test -v -race -timeout 30s ./...
 
+docker_run:
+	docker run --name=db -e $(DOCKER_SETTING)
+
 migrate_up:
-	migrate -path ./migrations -database 'postgres://postgres:$(DB_PASSWORD)@localhost:5436/postgres?sslmode=disable' up
+	migrate -path ./migrations $(MIGRATE) up
 
 migrate_down:
-	migrate -path ./migrations -database 'postgres://postgres:$(DB_PASSWORD)@localhost:5436/postgres?sslmode=disable' down
+	migrate -path ./migrations $(MIGRATE) down
 
 .DEFAULT_GOAL := build
