@@ -14,6 +14,7 @@ type userPermission struct {
 func (h *Handler) addPermission(c *gin.Context) {
 	owner_id, err := getUserId(c)
 	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

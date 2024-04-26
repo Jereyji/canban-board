@@ -10,6 +10,7 @@ import (
 func (h *Handler) updateCard(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

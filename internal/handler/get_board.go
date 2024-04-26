@@ -9,6 +9,7 @@ import (
 func (h *Handler) getBoardById(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 

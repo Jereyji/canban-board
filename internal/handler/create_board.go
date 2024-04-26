@@ -10,6 +10,7 @@ import (
 func (h *Handler) createBoard(c *gin.Context) {
 	id, err := getUserId(c)
 	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
