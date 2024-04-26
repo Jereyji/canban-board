@@ -28,6 +28,7 @@ type Card interface {
 	GetById(userId, cardId string) (todo.Card, error)
 	Delete(userId, cardId string) error
 	Update(userId, cardId string, input todo.UpdateCardInput) error
+	GetBoardIdByCard(cardId string) (string, error)
 }
 
 type Repository struct {

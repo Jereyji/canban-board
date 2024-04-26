@@ -164,3 +164,12 @@ func (r *CardPostgres) Update(userId, cardId string, input todo.UpdateCardInput)
 	_, err := r.db.Exec(query, args...)
 	return err
 }
+
+func (r *CardPostgres) GetBoardIdByCard(cardId string) (string, error) {
+	var boardId string
+	err := r.db.Get(&boardId, "SELECT board_id FROM " + boardCardsTable + " WHERE card_id = $1", cardId)
+	if err != nil {
+		return "", err
+	}
+	return boardId, nil
+}

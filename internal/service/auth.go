@@ -8,8 +8,6 @@ import (
 	todo "github.com/Jereyji/canban-board"
 	"github.com/Jereyji/canban-board/internal/repository"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -63,9 +61,6 @@ func (s *AuthService) GenerateToken(username, password string) (string, error) {
 		user.Id,
 	})
 
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
-	}
 	return token.SignedString([]byte(os.Getenv("SIGNINGKEY")))
 }
 

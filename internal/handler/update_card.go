@@ -14,8 +14,12 @@ func (h *Handler) updateCard(c *gin.Context) {
 		return
 	}
 
-	board_id := c.Param("board_id")
-	card_id := c.Param("card_id")
+	cardId := c.Param("card_id")
+	boardId, err := h.services.GetBoardIdByCard(cardId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	var input todo.UpdateCardInput
 	if err := c.BindJSON(&input); err != nil {
@@ -23,13 +27,13 @@ func (h *Handler) updateCard(c *gin.Context) {
 		return
 	}
 
-	err = h.services.CheckPermissionToCard(userId, board_id)
+	err = h.services.CheckPermissionToCard(userId, boardId)
 	if err != nil {
 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
-	if err := h.services.Card.Update(userId, card_id, input); err != nil {
+	if err := h.services.Card.Update(userId, cardId, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
