@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
 	"os"
+	"os/signal"
+	"syscall"
 
 	todo "github.com/Jereyji/canban-board"
 	"github.com/Jereyji/canban-board/internal/handler"
@@ -40,8 +43,28 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(todo.Server)
-	if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("Error occured while running http server: %s", err.Error())
+	go func () {
+		if err := srv.Run(viper.GetString("port"), handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("Error occured while running http server: %s", err.Error())
+		}
+	}()
+
+	logrus.Print("Canban-board started")
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<- quit
+	close(quit)
+
+	logrus.Print("Canban-board shutting down")
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("error occured on server shutting down: %s", err.Error())
+		os.Exit(1)
+	}
+
+	if err := db.Close(); err != nil {
+		logrus.Errorf("error occured on server shutting close: %s", err.Error())
+		os.Exit(1)
 	}
 }
 

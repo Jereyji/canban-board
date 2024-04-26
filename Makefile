@@ -3,7 +3,7 @@ DATABASE = restapi_dev
 
 .PHONY: build
 build:
-	go build -v ./cmd/api
+	go build -v ./cmd/apiserver
 
 .PHONY: test
 test:
