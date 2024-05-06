@@ -92,3 +92,7 @@ func generatePasswordHash(s string) (string, error) {
 
 	return string(b), nil
 }
+
+func (s *AuthService) GetById(userId string) (todo.User, error) {
+	return s.repo.GetById(userId)
+}

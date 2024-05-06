@@ -24,6 +24,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api", h.userIdentity)
 	{
+		user := api.Group("/user") 
+		{
+			user.GET("/", h.getUserInfo)
+		}
 		boards := api.Group("/boards")
 		{
 			boards.POST("/", h.createBoard)

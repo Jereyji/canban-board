@@ -10,6 +10,7 @@ type Authorization interface {
 	GenerateToken(username, password string) (string, error)
 	ParseToken(accessToken string) (string, error)
 	CheckUser(email string) (string, error)
+	GetById(userId string) (todo.User, error)
 }
 
 type Board interface {
