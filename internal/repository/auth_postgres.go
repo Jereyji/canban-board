@@ -1,8 +1,13 @@
 package repository
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
+
 	todo "github.com/Jereyji/canban-board"
 	"github.com/jmoiron/sqlx"
+	"github.com/sirupsen/logrus"
 )
 
 type AuthPostgres struct {
@@ -37,6 +42,41 @@ func (r *AuthPostgres) CheckUser(email string) (string, error) {
 	err := r.db.QueryRow(query, email).Scan(&userId)
 	return userId, err
 }
+
+func (r *AuthPostgres) UpdateUser(userId string, input todo.UpdateUserInput) error {
+	setValues := make([]string, 0)
+	args := make([]interface{}, 0)
+	argId := 1
+
+	if input.Name != nil {
+		setValues = append(setValues, fmt.Sprintf("name=$%d", argId))
+		args = append(args, input.Name)
+		argId++
+	}
+
+	if input.Username != nil {
+		setValues = append(setValues, fmt.Sprintf("username=$%d", argId))
+		args = append(args, input.Username)
+		argId++
+	}
+
+	if input.Email != nil {
+		setValues = append(setValues, fmt.Sprintf("email=$%d", argId))
+		args = append(args, input.Email)
+		argId++
+	}
+
+	setQuery := strings.Join(setValues, ", ")
+	query := "UPDATE " + usersTable + " SET " + setQuery + " WHERE id = $" + strconv.Itoa(argId)
+	args = append(args, userId)
+
+	logrus.Debugf("updateUserQuery: %s", query)
+	logrus.Debugf("args: %s", args)
+
+	_, err := r.db.Exec(query, args...)
+	return err
+}
+
 
 func (r *AuthPostgres) GetById(userId string) (todo.User, error) {
 	var user todo.User

@@ -17,6 +17,12 @@ type User struct {
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
+type UpdateUserInput struct {
+	Name     *string `json:"name"`
+	Username *string `json:"username"`
+	Email    *string `json:"email"`
+}
+
 func (u *User) ValidateUserInput() error {
 	return validation.ValidateStruct(
 		u,

@@ -10,6 +10,7 @@ type Authorization interface {
 	GetUser(username string) (todo.User, error)
 	CheckUser(email string) (string, error)
 	GetById(userId string) (todo.User, error)
+	UpdateUser(userId string, input todo.UpdateUserInput) (error)
 }
 
 type Board interface {

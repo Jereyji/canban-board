@@ -11,6 +11,7 @@ type Authorization interface {
 	ParseToken(accessToken string) (string, error)
 	CheckUser(email string) (string, error)
 	GetById(userId string) (todo.User, error)
+	UpdateUser(userId string, input todo.UpdateUserInput) (error)
 }
 
 type Board interface {

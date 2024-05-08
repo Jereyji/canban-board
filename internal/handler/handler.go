@@ -27,6 +27,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		user := api.Group("/user") 
 		{
 			user.GET("/", h.getUserInfo)
+			user.PUT("/", h.updateUser)
 		}
 		boards := api.Group("/boards")
 		{

@@ -96,3 +96,7 @@ func generatePasswordHash(s string) (string, error) {
 func (s *AuthService) GetById(userId string) (todo.User, error) {
 	return s.repo.GetById(userId)
 }
+
+func (s *AuthService) UpdateUser(userId string, input todo.UpdateUserInput) (error) {
+	return s.repo.UpdateUser(userId, input)
+}
