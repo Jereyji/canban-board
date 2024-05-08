@@ -24,7 +24,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api", h.userIdentity)
 	{
-		user := api.Group("/user") 
+		user := api.Group("/user")
 		{
 			user.GET("/", h.getUserInfo)
 			user.PUT("/", h.updateUser)
@@ -44,7 +44,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 				cards.GET("/", h.getAllCards)
 			}
 		}
-		cards := api.Group("/cards") 
+		cards := api.Group("/cards")
 		{
 			cards.GET("/:card_id", h.getCardById)
 			cards.PUT("/:card_id", h.updateCard)

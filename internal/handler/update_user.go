@@ -20,13 +20,18 @@ func (h *Handler) updateUser(c *gin.Context) {
 		return
 	}
 
+	if err := input.ValidateUserUpdate(); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	if err := h.services.Authorization.UpdateUser(userId, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, statusResponse {
+	c.JSON(http.StatusOK, statusResponse{
 		Activity: "Update User",
-		Status: "ok",
+		Status:   "ok",
 	})
 }
