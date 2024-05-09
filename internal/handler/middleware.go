@@ -3,13 +3,14 @@ package handler
 import (
 	"errors"
 	"net/http"
+	// "strings"
 
 	"github.com/gin-gonic/gin"
 )
 
 const (
-	adminLevel = "admin"
-	editorLevel = "editor"
+	adminLevel          = "admin"
+	editorLevel         = "editor"
 	authorizationHeader = "Authorization"
 	userCtx             = "userId"
 )
@@ -30,7 +31,6 @@ func (h *Handler) userIdentity(c *gin.Context) {
 
 	c.Set(userCtx, userId)
 }
-
 
 // func (h *Handler) userIdentity(c *gin.Context) {
 // 	header := c.GetHeader(authorizationHeader)

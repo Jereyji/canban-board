@@ -38,10 +38,11 @@ func (r *CardPostgres) Create(boardId string, card todo.Card) (string, error) {
 
 	var cardId string
 	err = tx.QueryRow(
-		"INSERT INTO cards (title, description, due_date, user_id) VALUES ($1, $2, $3, $4) RETURNING id",
+		"INSERT INTO cards (title, description, due_date, status_card, user_id) VALUES ($1, $2, $3, $4, $5) RETURNING id",
 		card.Title,
 		card.Description,
 		dueDate,
+		card.StatusCard,
 		card.UserId,
 	).Scan(&cardId)
 	if err != nil {
@@ -50,10 +51,9 @@ func (r *CardPostgres) Create(boardId string, card todo.Card) (string, error) {
 	}
 
 	_, err = tx.Exec(
-		"INSERT INTO board_cards (board_id, card_id, status_card) VALUES ($1, $2, $3)",
+		"INSERT INTO board_cards (board_id, card_id) VALUES ($1, $2)",
 		boardId,
 		cardId,
-		todo.ToDo,
 	)
 	if err != nil {
 		tx.Rollback()
