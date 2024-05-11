@@ -84,7 +84,7 @@ func (r *CardPostgres) CheckPermissionToCard(userId, boardId string) error {
 func (r *CardPostgres) GetAll(userId, boardId string) ([]todo.Card, error) {
 	var cards []todo.Card
 
-	query := "SELECT ct.id, ct.title, ct.description, ct.due_date, ct.user_id, ct.created_at" +
+	query := "SELECT ct.id, ct.title, ct.description, ct.due_date, ct.status_card, ct.user_id, ct.created_at" +
 		" FROM " + cardsTable +
 		" ct INNER JOIN " + boardCardsTable +
 		" bc on bc.card_id = ct.id INNER JOIN " + boardPermissionsTable +
