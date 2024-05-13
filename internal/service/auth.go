@@ -100,3 +100,11 @@ func (s *AuthService) GetById(userId string) (todo.User, error) {
 func (s *AuthService) UpdateUser(userId string, input todo.UpdateUserInput) (error) {
 	return s.repo.UpdateUser(userId, input)
 }
+
+func (s *AuthService) GetAllUsers(boardId string) ([]todo.BoardUsers, error) {
+	return s.repo.GetAllUsers(boardId)
+}
+
+func (s *AuthService) ExcludeUser(username, boardId string) error {
+	return s.repo.ExcludeUser(username, boardId)
+}

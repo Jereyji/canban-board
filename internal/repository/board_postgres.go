@@ -77,11 +77,33 @@ func (r *BoardPostgres) GetById(userId, boardId string) (todo.Board, error) {
 }
 
 func (r *BoardPostgres) Delete(userId, boardId string) error {
-	query := "DELETE FROM " + boardsTable + " bt USING " + boardPermissionsTable +
-		" bu WHERE bt.id = bu.board_id AND bu.user_id = $1 AND bu.board_id = $2"
-	_, err := r.db.Exec(query, userId, boardId)
+    tx, err := r.db.Begin()
+    if err != nil {
+        return err
+    }
 
-	return err
+    defer func() {
+        if err != nil {
+            tx.Rollback()
+            return
+        }
+        err = tx.Commit()
+    }()
+
+    query := "DELETE FROM " + cardsTable + " ct USING " + boardCardsTable + " bct WHERE bct.board_id = $1 AND bct.card_id = ct.id"
+    _, err = tx.Exec(query, boardId)
+    if err != nil {
+        return err
+    }
+
+    query = "DELETE FROM " + boardsTable + " bt USING " + boardPermissionsTable +
+        " bu WHERE bt.id = bu.board_id AND bu.user_id = $1 AND bu.board_id = $2"
+    _, err = tx.Exec(query, userId, boardId)
+    if err != nil {
+        return err
+    }
+
+    return nil
 }
 
 func (r *BoardPostgres) Update(userId, boardId string, input todo.UpdateBoardInput) error {

@@ -77,6 +77,22 @@ func (r *AuthPostgres) UpdateUser(userId string, input todo.UpdateUserInput) err
 	return err
 }
 
+func (r *AuthPostgres) GetAllUsers(boardId string) ([]todo.BoardUsers, error) {
+	var Users []todo.BoardUsers
+
+	query := `
+        SELECT u.username, bp.access_level
+        FROM users u
+        JOIN board_permissions bp ON u.id = bp.user_id
+        WHERE bp.board_id = $1`
+
+	err := r.db.Select(&Users, query, boardId)
+	if err != nil {
+		return nil, err
+	}
+
+	return Users, nil
+}
 
 func (r *AuthPostgres) GetById(userId string) (todo.User, error) {
 	var user todo.User
@@ -84,4 +100,12 @@ func (r *AuthPostgres) GetById(userId string) (todo.User, error) {
 	query := "SELECT name, username, email, created_at FROM " + usersTable + " WHERE id = $1"
 	err := r.db.Get(&user, query, userId)
 	return user, err
+}
+
+func (r *AuthPostgres) ExcludeUser(username, boardId string) error {
+    query := "DELETE FROM " + boardPermissionsTable + 
+             " WHERE user_id IN (SELECT id FROM " + usersTable + " WHERE username = $1) AND board_id = $2"
+    _, err := r.db.Exec(query, username, boardId)
+
+    return err
 }

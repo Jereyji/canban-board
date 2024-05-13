@@ -11,6 +11,8 @@ type Authorization interface {
 	CheckUser(email string) (string, error)
 	GetById(userId string) (todo.User, error)
 	UpdateUser(userId string, input todo.UpdateUserInput) (error)
+	GetAllUsers(boardId string) ([]todo.BoardUsers, error)
+	ExcludeUser(username, boardId string) error
 }
 
 type Board interface {

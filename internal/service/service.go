@@ -12,6 +12,8 @@ type Authorization interface {
 	CheckUser(email string) (string, error)
 	GetById(userId string) (todo.User, error)
 	UpdateUser(userId string, input todo.UpdateUserInput) (error)
+	GetAllUsers(boardId string) ([]todo.BoardUsers, error)
+	ExcludeUser(userId, boardId string) error
 }
 
 type Board interface {
@@ -21,7 +23,7 @@ type Board interface {
 	GetById(userId, boardId string) (todo.Board, error)
 	Delete(userId, boardId string) error
 	Update(userId, boardId string, input todo.UpdateBoardInput) error
-	CheckPermissionToBoard(userId, boardId, accessLevel string) error
+	CheckPermissionToBoard(username, boardId, accessLevel string) error
 }
 
 type Card interface {

@@ -153,6 +153,12 @@ func (r *CardPostgres) Update(userId, cardId string, input todo.UpdateCardInput)
 		argId++
 	}
 
+	if input.StatusCard != nil {
+		setValues = append(setValues, fmt.Sprintf("status_card=$%d", argId))
+		args = append(args, *input.StatusCard)
+		argId++
+	}
+
 	setQuery := strings.Join(setValues, ", ")
 	argBoardIdStr := strconv.Itoa(argId)
 	argUserIdStr := strconv.Itoa(argId + 1)

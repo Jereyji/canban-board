@@ -23,6 +23,11 @@ type UpdateUserInput struct {
 	Email    *string `json:"email" binding:"required"`
 }
 
+type BoardUsers struct {
+	Username  string    `json:"username" binding:"required"`
+	AccessLevel string `json:"access_level" db:"access_level"`
+}
+
 func (u *User) ValidateUserInput() error {
 	return validation.ValidateStruct(
 		u,

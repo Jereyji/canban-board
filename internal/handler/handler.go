@@ -33,7 +33,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			boards.POST("/", h.createBoard)
 			boards.GET("/", h.getAllBoards)
-			boards.POST("/:board_id", h.addPermission)
 			boards.GET("/:board_id", h.getBoardById)
 			boards.PUT("/:board_id", h.updateBoard)
 			boards.DELETE("/:board_id", h.deleteBoard)
@@ -42,6 +41,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			{
 				cards.POST("/", h.createCard)
 				cards.GET("/", h.getAllCards)
+			}
+			users := boards.Group(":board_id/users")
+			{
+				users.GET("/", h.getAllUsers)
+				users.POST("/", h.addPermission)
+				users.DELETE("/", h.excludeUser)
 			}
 		}
 		cards := api.Group("/cards")

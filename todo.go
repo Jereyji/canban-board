@@ -23,7 +23,7 @@ type BoardPermission struct {
 }
 
 type Card struct {
-	Id          string    `json:"-" db:"id"`
+	Id          string    `json:"id" db:"id"`
 	Title       string    `json:"title" db:"title" binding:"required"`
 	Description string    `json:"description" db:"description"`
 	DueDate     string    `json:"due_date" db:"due_date"`
@@ -54,6 +54,7 @@ type UpdateCardInput struct {
 	Description *string `json:"description"`
 	DueDate     *string `json:"due_date"`
 	UserId      *string `json:"user_id"`
+	StatusCard  *string `json:"status_card"`
 }
 
 func (i UpdateCardInput) Validate() error {
