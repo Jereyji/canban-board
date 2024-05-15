@@ -17,7 +17,8 @@ const (
 
 func (h *Handler) userIdentity(c *gin.Context) {
 	var token string
-	cookie, err := c.Request.Cookie("session_cookie")
+	cookie, err := c.Request.Cookie("JTV")
+
 	if err == nil {
 		token = cookie.Value
 	} else {
@@ -42,44 +43,6 @@ func (h *Handler) userIdentity(c *gin.Context) {
 
 	c.Set(userCtx, userId)
 }
-
-// func (h *Handler) userIdentity(c *gin.Context) {
-// 	cookie, err := c.Request.Cookie("session_cookie")
-// 	if err != nil {
-// 		newErrorResponse(c, http.StatusUnauthorized, "missing session cookie")
-// 		return
-// 	}
-
-// 	userId, err := h.services.Authorization.ParseToken(cookie.Value)
-// 	if err != nil {
-// 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
-// 		return
-// 	}
-
-// 	c.Set(userCtx, userId)
-// }
-
-// func (h *Handler) userIdentity(c *gin.Context) {
-// 	header := c.GetHeader(authorizationHeader)
-// 	if header == "" {
-// 		newErrorResponse(c, http.StatusUnauthorized, "empty auth header")
-// 		return
-// 	}
-
-// 	headerParts := strings.Split(header, " ")
-// 	if len(headerParts) != 2 {
-// 		newErrorResponse(c, http.StatusUnauthorized, header + " invalid auth header")
-// 		return
-// 	}
-
-// 	userId, err := h.services.Authorization.ParseToken(headerParts[1])
-// 	if err != nil {
-// 		newErrorResponse(c, http.StatusUnauthorized, err.Error())
-// 		return
-// 	}
-
-// 	c.Set(userCtx, userId)
-// }
 
 func getUserId(c *gin.Context) (string, error) {
 	id, ok := c.Get(userCtx)

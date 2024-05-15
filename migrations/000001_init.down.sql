@@ -1,13 +1,15 @@
-DROP TABLE board_permissions;
+DROP TABLE IF EXISTS board_permissions;
 
-DROP TABLE board_cards;
+DROP TABLE IF EXISTS board_cards;
 
-DROP TABLE cards;
+DROP TABLE IF EXISTS cards;
 
-DROP TABLE boards;
+DROP TABLE IF EXISTS boards;
 
-DROP TABLE users;
+DROP TABLE IF EXISTS users;
 
-DROP TYPE access_level_enum;
+DROP TABLE IF EXISTS confirmation_codes;
 
-DROP TYPE status_card_enum;
+DROP TYPE IF EXISTS access_level_enum;
+
+DROP TYPE IF EXISTS status_card_enum;

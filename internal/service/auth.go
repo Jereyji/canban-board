@@ -38,21 +38,29 @@ func (s *AuthService) CheckUser(email string) (string, error) {
 	if id == "" || err != nil {
 		return "", errors.New("user with given email does not exist")
 	}
-	return id, nil	
+	return id, nil
 }
 
-func (s *AuthService) GenerateToken(username, password string) (string, error) {
-	user, err := s.repo.GetUser(username)
+func (s *AuthService) ComparePassword(email, password string) error {
+	user, err := s.repo.GetUser(email)
 	if err != nil {
-		return "", err
+		return err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *AuthService) GenerateToken(email string) (string, error) {
+	user, err := s.repo.GetUser(email)
+	if err != nil {
 		return "", err
 	}
 
-	tokenTTL := 6 * time.Hour
+	tokenTTL := 2 * time.Hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
@@ -97,7 +105,7 @@ func (s *AuthService) GetById(userId string) (todo.User, error) {
 	return s.repo.GetById(userId)
 }
 
-func (s *AuthService) UpdateUser(userId string, input todo.UpdateUserInput) (error) {
+func (s *AuthService) UpdateUser(userId string, input todo.UpdateUserInput) error {
 	return s.repo.UpdateUser(userId, input)
 }
 
@@ -107,4 +115,12 @@ func (s *AuthService) GetAllUsers(boardId string) ([]todo.BoardUsers, error) {
 
 func (s *AuthService) ExcludeUser(username, boardId string) error {
 	return s.repo.ExcludeUser(username, boardId)
+}
+
+func (s *AuthService) SetCode(email, code string) error {
+	return s.repo.SetCode(email, code)
+}
+
+func (s *AuthService) GetCode(email string) (string, error) {
+	return s.repo.GetCode(email)
 }

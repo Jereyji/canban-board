@@ -63,3 +63,8 @@ func (i UpdateCardInput) Validate() error {
 	}
 	return nil
 }
+
+type Confirm struct {
+	Token string
+	Code string
+}

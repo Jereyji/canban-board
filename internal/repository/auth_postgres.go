@@ -29,10 +29,10 @@ func (r *AuthPostgres) CreateUser(user todo.User) (string, error) {
 	return id, nil
 }
 
-func (r *AuthPostgres) GetUser(username string) (todo.User, error) {
+func (r *AuthPostgres) GetUser(email string) (todo.User, error) {
 	var user todo.User
-	query := "SELECT id, password_hash FROM " + usersTable + " WHERE username=$1"
-	err := r.db.Get(&user, query, username)
+	query := "SELECT id, password_hash FROM " + usersTable + " WHERE email=$1"
+	err := r.db.Get(&user, query, email)
 	return user, err
 }
 
@@ -103,9 +103,38 @@ func (r *AuthPostgres) GetById(userId string) (todo.User, error) {
 }
 
 func (r *AuthPostgres) ExcludeUser(username, boardId string) error {
-    query := "DELETE FROM " + boardPermissionsTable + 
-             " WHERE user_id IN (SELECT id FROM " + usersTable + " WHERE username = $1) AND board_id = $2"
-    _, err := r.db.Exec(query, username, boardId)
+	query := "DELETE FROM " + boardPermissionsTable +
+		" WHERE user_id IN (SELECT id FROM " + usersTable + " WHERE username = $1) AND board_id = $2"
+	_, err := r.db.Exec(query, username, boardId)
 
-    return err
+	return err
 }
+
+func (r *AuthPostgres) SetCode(email, code string) error {
+	var count int
+	err := r.db.QueryRow("SELECT COUNT(*) FROM confirmation_codes WHERE email = $1;", email).Scan(&count)
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		query := "UPDATE confirmation_codes SET code = $1 WHERE email = $2;"
+		_, err = r.db.Exec(query, code, email)
+	} else {
+		query := "INSERT INTO confirmation_codes (email, code) VALUES ($1, $2);"
+		_, err = r.db.Exec(query, email, code)
+	}
+	return err
+}
+
+func (r *AuthPostgres) GetCode(email string) (string, error) {
+	var code string
+
+	err := r.db.QueryRow("SELECT code FROM confirmation_codes WHERE email = $1 LIMIT 1;", email).Scan(&code)
+	if err != nil {
+		return code, err
+	}
+
+	return code, nil
+}
+
