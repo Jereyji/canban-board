@@ -2,7 +2,9 @@ package handler
 
 import (
 	"github.com/Jereyji/canban-board/internal/service"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type Handler struct {
@@ -13,8 +15,29 @@ func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
+func secureHeaders() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("X-Content-Type-Options", "nosniff")
+		c.Header("X-Frame-Options", "DENY")
+		c.Header("X-XSS-Protection", "1; mode=block")
+		c.Header("Referrer-Policy", "no-referrer")
+		c.Next()
+	}
+}
+
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
+
+	router.Use(secureHeaders())
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	auth := router.Group("/auth")
 	{
