@@ -93,7 +93,7 @@ func (s *AuthService) ParseToken(accessToken string) (string, error) {
 }
 
 func generatePasswordHash(s string) (string, error) {
-	b, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MinCost)
+	b, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.MaxCost)
 	if err != nil {
 		return "", err
 	}
