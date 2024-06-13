@@ -62,7 +62,7 @@
 Окно с задачами рабочего пространства
 ![alt_text](images/cards.png)
 
-## Участие в проекте
+***
 
 This project was developed by a student of NSTU: jereyji
 
